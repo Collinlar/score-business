@@ -57,8 +57,8 @@ export default function DimensionBreakdown({ scores, variant }: DimensionBreakdo
     <div className="space-y-0">
       {working.length > 0 && (
         <div className="mb-5">
-          <p className="text-xs font-medium text-orange mb-3 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange inline-block shrink-0" aria-hidden />
+          <p className="text-xs font-medium text-teal mb-3 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal inline-block shrink-0" aria-hidden />
             Working for you
           </p>
           <div className="space-y-3">
@@ -72,7 +72,7 @@ export default function DimensionBreakdown({ scores, variant }: DimensionBreakdo
                     <span className="font-medium text-white/80 flex flex-wrap items-center gap-1.5">
                       {label}
                       {full && (
-                        <span className="text-orange font-semibold text-[10px] uppercase tracking-wide">
+                        <span className="text-teal font-semibold text-[10px] uppercase tracking-wide">
                           Full marks
                         </span>
                       )}
