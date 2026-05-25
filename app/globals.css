@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* W1 — Ghana Business Score: warm near-black, orange accent */
+  --background: #0B0907;
+  --foreground: #ffffff;
+  --w1-bg:      #0B0907;
+  --w1-card:    #141210;
+  --w1-border:  rgba(255, 255, 255, 0.08);
+  --accent:     #FF7A00;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: #ffffff;
+  background: #0B0907;
+  font-family: var(--font-body, -apple-system), BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, var(--font-body, -apple-system)), sans-serif;
+}
+
+/* Score animation */
+@keyframes score-fill {
+  from { stroke-dashoffset: 565; }
+  to   { stroke-dashoffset: var(--score-offset); }
+}
+
+.score-ring {
+  animation: score-fill 1.2s ease-out forwards;
+}
+
+/* Blur gate effect */
+.gated {
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Funnel step enter */
+@keyframes funnel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-funnel-enter {
+  animation: funnel-enter 0.26s ease-out both;
+}
+
+/* Assessment step transitions (inside form) */
+@keyframes form-step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-form-step {
+  animation: form-step-enter 0.22s ease-out both;
+}
+
+/* Landing stagger */
+@keyframes stagger-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-stagger-item {
+  opacity: 0;
+  animation: stagger-fade-up 0.48s ease-out forwards;
+}
+
+.landing-delay-1 { animation-delay: 45ms; }
+.landing-delay-2 { animation-delay: 110ms; }
+.landing-delay-3 { animation-delay: 175ms; }
+.landing-delay-4 { animation-delay: 240ms; }
+.landing-delay-5 { animation-delay: 305ms; }
+.landing-delay-6 { animation-delay: 370ms; }
+
+/* Score headline after ring */
+@keyframes score-headline-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-score-headline {
+  opacity: 0;
+  animation: score-headline-enter 0.4s ease-out 1s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-funnel-enter,
+  .animate-form-step,
+  .landing-stagger-item,
+  .animate-score-headline {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .score-ring {
+    animation: none !important;
+  }
+}
+
+/* Touch-friendly inputs */
+input, select, textarea, button {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
