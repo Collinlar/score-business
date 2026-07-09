@@ -14,12 +14,12 @@ export default function DimensionBreakdown({ scores, variant }: DimensionBreakdo
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    const mq = typeof window.matchMedia === "function"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)")
-      : null;
-    if (mq?.matches) {
-      setAnimate(true);
-      return;
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      const t = setTimeout(() => setAnimate(true), 0);
+      return () => clearTimeout(t);
     }
     const id = requestAnimationFrame(() => setAnimate(true));
     return () => cancelAnimationFrame(id);

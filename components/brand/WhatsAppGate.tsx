@@ -2,60 +2,38 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import type { OTPStatus } from "@/types";
 
 interface WhatsAppGateProps {
-  onVerified: (phone: string) => void;
+  onVerified: (phone: string, email: string) => void;
 }
 
 export default function WhatsAppGate({ onVerified }: WhatsAppGateProps) {
-  const [phone,     setPhone]     = useState("");
-  const [otp,       setOtp]       = useState("");
-  const [phoneHash, setPhoneHash] = useState("");
-  const [status,    setStatus]    = useState<OTPStatus>("idle");
-  const [error,     setError]     = useState("");
+  const [phone,      setPhone]      = useState("");
+  const [email,      setEmail]      = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [loading,    setLoading]    = useState(false);
 
-  async function handleSendOTP() {
-    setError("");
-    setStatus("sending");
-
-    const res  = await fetch("/api/send-otp", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ phone }),
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error ?? "That did not go through. Check your number and tap again.");
-      setStatus("idle");
-      return;
-    }
-
-    setPhoneHash(data.phoneHash);
-    setStatus("sent");
+  function isValidEmail(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  async function handleVerifyOTP() {
-    setError("");
-    setStatus("verifying");
+  async function handleSubmit() {
+    let hasError = false;
 
-    const res  = await fetch("/api/verify-otp", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ phoneHash, otp }),
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error ?? "That code is not right. Check your WhatsApp and try again.");
-      setStatus("sent");
-      return;
+    if (!phone.trim()) {
+      setPhoneError("Add your WhatsApp number to continue.");
+      hasError = true;
+    }
+    if (!isValidEmail(email)) {
+      setEmailError("Add a valid email address to continue.");
+      hasError = true;
     }
 
-    setStatus("verified");
-    onVerified(phone);
+    if (hasError) return;
+
+    setLoading(true);
+    onVerified(phone.trim(), email.trim());
   }
 
   return (
@@ -72,62 +50,62 @@ export default function WhatsAppGate({ onVerified }: WhatsAppGateProps) {
         Your full report is ready.
       </h3>
       <p className="text-sm text-white/60 mb-5 leading-body">
-        Enter your WhatsApp number to see your complete score, all gaps, and your priority action list.
+        Enter your WhatsApp number and email to see your complete score, all gaps, and your priority action list.
         We will also send you a copy so you can refer back to it.
       </p>
 
-      {status === "idle" || status === "sending" ? (
-        <div className="flex flex-col gap-4">
-          <Input
-            label="Your WhatsApp number"
+      <div className="flex flex-col gap-4">
+        {/* Phone field */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-white/80">WhatsApp number</label>
+          <input
             type="tel"
             placeholder="+233 24 123 4567"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
             autoComplete="tel"
-            error={error}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              if (phoneError) setPhoneError("");
+            }}
+            className="w-full bg-white/[0.06] border border-white/[0.12] rounded-lg px-3 text-white placeholder:text-white/30 text-base focus:outline-none focus:border-orange/60 transition-colors"
+            style={{ height: "44px", fontSize: "16px" }}
           />
-          <Button
-            onClick={handleSendOTP}
-            loading={status === "sending"}
-            size="lg"
-          >
-            Send my WhatsApp code
-          </Button>
+          {phoneError && (
+            <p className="text-xs text-red-400 mt-0.5">{phoneError}</p>
+          )}
         </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-orange font-medium">
-            Code sent to {phone}. Check your WhatsApp.
-          </p>
-          <Input
-            label="Enter your 6-digit code"
-            type="text"
-            inputMode="numeric"
-            placeholder="123456"
-            maxLength={6}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-            error={error}
+
+        {/* Email field */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-white/80">Email address</label>
+          <input
+            type="email"
+            placeholder="you@yourbusiness.com"
+            value={email}
+            autoComplete="email"
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError("");
+            }}
+            className="w-full bg-white/[0.06] border border-white/[0.12] rounded-lg px-3 text-white placeholder:text-white/30 text-base focus:outline-none focus:border-orange/60 transition-colors"
+            style={{ height: "44px", fontSize: "16px" }}
           />
-          <Button
-            onClick={handleVerifyOTP}
-            loading={status === "verifying"}
-            size="lg"
-          >
-            Unlock my full report
-          </Button>
-          <button
-            onClick={() => { setStatus("idle"); setError(""); }}
-            className="text-sm text-white/40 underline underline-offset-2 text-center"
-          >
-            Use a different number
-          </button>
+          {emailError && (
+            <p className="text-xs text-red-400 mt-0.5">{emailError}</p>
+          )}
         </div>
-      )}
+
+        <Button
+          onClick={handleSubmit}
+          loading={loading}
+          size="lg"
+        >
+          Show my full report
+        </Button>
+      </div>
 
       <p className="text-xs text-white/40 mt-4 text-center">
-        We respect your privacy. Reply DELETE to any message to remove your data.
+        No spam. We use your details to send you this report and relevant tips from BVM Digital.
       </p>
     </div>
   );

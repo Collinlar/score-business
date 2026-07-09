@@ -54,7 +54,7 @@ export default function Home() {
     }
   }
 
-  async function handleGateVerified(verifiedPhone: string) {
+  async function handleGateVerified(verifiedPhone: string, email: string) {
     setPhone(verifiedPhone);
 
     fetch("/api/capture-lead", {
@@ -62,6 +62,7 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         phone: verifiedPhone,
+        email,
         businessName: answers.businessName,
         industry: answers.industry,
         city: answers.city,

@@ -7,7 +7,7 @@ import { pushLeadToHubSpot } from "@/lib/hubspot";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone, businessName, industry, city, score, grade } = await req.json();
+    const { phone, email, businessName, industry, city, score, grade } = await req.json();
 
     const normalisedPhone = normalisePhone(phone);
     const phoneHash       = hashPhone(normalisedPhone);
@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     const { error: leadError } = await db.from("lead_captures").insert({
       phone_hash:      phoneHash,
       phone_encrypted: Buffer.from(normalisedPhone).toString("base64"), // Basic encoding; use proper encryption in prod
+      email:           email ?? null,
       business_name:   businessName,
       industry,
       city,
@@ -33,6 +34,7 @@ export async function POST(req: NextRequest) {
     // Push to HubSpot (non-blocking)
     pushLeadToHubSpot({
       phone: normalisedPhone,
+      email,
       businessName,
       industry,
       city,

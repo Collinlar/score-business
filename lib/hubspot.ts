@@ -7,6 +7,7 @@ import { isTutorialEnvValue } from "@/lib/env";
 
 interface LeadPayload {
   phone:        string;
+  email?:       string;
   businessName: string;
   industry:     string;
   city:         string;
@@ -31,6 +32,7 @@ export async function pushLeadToHubSpot(lead: LeadPayload): Promise<void> {
       body: JSON.stringify({
         properties: {
           phone:                  lead.phone,
+          email:                  lead.email ?? "",
           company:                lead.businessName,
           city:                   lead.city,
           industry:               lead.industry,

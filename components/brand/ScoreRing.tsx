@@ -25,11 +25,8 @@ export default function ScoreRing({ score, grade }: ScoreRingProps) {
     const reduced =
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setShowCentre(true);
-      return;
-    }
-    const t = setTimeout(() => setShowCentre(true), 700);
+    const delay = reduced ? 0 : 700;
+    const t = setTimeout(() => setShowCentre(true), delay);
     return () => clearTimeout(t);
   }, []);
 
