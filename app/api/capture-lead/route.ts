@@ -7,7 +7,7 @@ import { pushLeadToHubSpot } from "@/lib/hubspot";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone, email, businessName, industry, city, score, grade } = await req.json();
+    const { phone, email, businessName, industry, city, score, grade, sessionId } = await req.json();
 
     const normalisedPhone = normalisePhone(phone);
     const phoneHash       = hashPhone(normalisedPhone);
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       score,
       grade,
       tool_id:         "W1",
+      session_id:      sessionId ?? null,
     });
 
     if (leadError) {

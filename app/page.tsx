@@ -68,6 +68,7 @@ export default function Home() {
         city: answers.city,
         score: scores?.total ?? 0,
         grade: report?.grade ?? "F",
+        sessionId: SESSION_ID,
       }),
     }).catch(console.error);
 

@@ -80,6 +80,7 @@ export function getSupabaseAdmin(): SupabaseClient {
     score           int,
     grade           text,
     tool_id         text default 'W1',
+    session_id      text,           -- links to score_results.session_id
     hubspot_synced  boolean default false,
     created_at      timestamptz default now()
   )

@@ -242,7 +242,13 @@ export default function FullReport({ report, scores, answers }: FullReportProps)
         </div>
       </div>
 
-      <CTABlock businessName={answers.businessName} score={report.score} />
+      <CTABlock
+        businessName={answers.businessName}
+        score={report.score}
+        grade={report.grade}
+        city={answers.city}
+        industry={answers.industry}
+      />
     </div>
   );
 }
